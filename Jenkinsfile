@@ -1,0 +1,54 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "sanjayregula/my-nginx-app"
+    }
+
+    stages {
+
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Image') {
+            steps {
+                sh 'docker build -t $IMAGE_NAME:latest .'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-creds',
+                        usernameVariable: 'USER',
+                        passwordVariable: 'PASS'
+                    )
+                ]) {
+
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push $IMAGE_NAME:latest
+                    '''
+                }
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh '''
+                docker stop nginx-demo || true
+                docker rm nginx-demo || true
+
+                docker run -d \
+                --name nginx-demo \
+                -p 8080:80 \
+                $IMAGE_NAME:latest
+                '''
+            }
+        }
+    }
+}
