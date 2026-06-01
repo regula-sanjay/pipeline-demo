@@ -15,7 +15,7 @@ pipeline {
 
         stage('Build Image') {
             steps {
-                sh 'docker build -t $IMAGE_NAME:latest .'
+                sh "docker build -t ${IMAGE_NAME}:latest .'
             }
         }
 
@@ -32,22 +32,25 @@ pipeline {
                     sh '''
                     echo $PASS | docker login -u $USER --password-stdin
                     docker push $IMAGE_NAME:latest
+                    docker logout
                     '''
                 }
             }
         }
 
         stage('Run Container') {
-            steps {
-                sh '''
-                docker stop nginx-demo || true
-                docker rm nginx-demo || true
+    steps {
+        sh '''
+        docker pull $IMAGE_NAME:latest
 
-                docker run -d \
-                --name nginx-demo \
-                -p 8080:80 \
-                $IMAGE_NAME:latest
-                '''
+        docker stop nginx-demo || true
+        docker rm nginx-demo || true
+
+        docker run -d \
+        --name nginx-demo \
+        -p 8080:80 \
+        $IMAGE_NAME:latest
+        '''
             }
         }
     }
