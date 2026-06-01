@@ -48,7 +48,7 @@ pipeline {
 
         docker run -d \
         --name nginx-demo \
-        -p 8888:80 \
+        -p 9090:80 \
         $IMAGE_NAME:latest
         '''
             }
