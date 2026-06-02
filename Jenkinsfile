@@ -15,8 +15,9 @@ pipeline {
 
         stage('Checkout') {
             steps {
-                git branch: "${params.BRANCH}",
-                    url: 'https://github.com/sanjayregula/demo-pipeline.git'
+                 git branch: "${params.BRANCH}",
+            url: 'https://github.com/sanjayregula/demo-pipeline.git',
+            credentialsId: 'github-token2'
             }
         }
 
