@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE = "yourdockerhubusername/myapp"
+        IMAGE = "YOUR_DOCKERHUB_USERNAME/myapp"
         CONTAINER = "myapp-container"
     }
 
@@ -26,7 +26,13 @@ pipeline {
 
         stage('Login DockerHub') {
             steps {
-                sh "echo PASSWORD | docker login -u USER --password-stdin"
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )]) {
+                    sh "echo $PASS | docker login -u $USER --password-stdin"
+                }
             }
         }
 
@@ -51,9 +57,9 @@ pipeline {
         stage('Run Container') {
             steps {
                 sh """
-                docker stop myapp-container || true
-                docker rm myapp-container || true
-                docker run -d -p 8081:80 --name myapp-container $IMAGE:${params.VERSION}
+                docker stop $CONTAINER || true
+                docker rm $CONTAINER || true
+                docker run -d -p 8081:80 --name $CONTAINER $IMAGE:${params.VERSION}
                 """
             }
         }
