@@ -1,6 +1,5 @@
 pipeline {
-    
-    agent any
+     agent any
 
     parameters {
         string(name: 'VERSION', defaultValue: '1.0', description: 'Enter build version')
