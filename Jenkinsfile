@@ -31,10 +31,9 @@ pipeline {
 
         stage('Clean Workspace') {
             when {
-                expression { params.CLEAN }
+                expression { params.CLEAN == true }
             }
             steps {
-                echo "Cleaning workspace..."
                 deleteDir()
             }
         }
