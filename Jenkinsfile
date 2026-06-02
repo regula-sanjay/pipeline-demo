@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        IMAGE = "YOUR_DOCKERHUB_USERNAME/myapp"
+        IMAGE = "regulasanjay/myapp"
         CONTAINER = "myapp-container"
     }
 
