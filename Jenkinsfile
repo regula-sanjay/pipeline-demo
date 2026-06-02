@@ -1,5 +1,12 @@
 pipeline {
     agent any
+      parameters {
+        string(name: 'PORT', defaultValue: '8081', description: 'Port Number')
+    }
+
+    stages {
+        // your stages
+    }
 
     environment {
         IMAGE_NAME = "sanjayregula/my-nginx-app"
